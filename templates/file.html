@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Files</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!--<link rel="stylesheet" href="static/files.css">-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='files.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <div class="main-menu">
+            {% if only_folder == "True" %}
+            <div class="move-mode">
+                <a href="/move/{{file_to_move}}">MOVE TO</a>
+            </div>
+            {% else %}
+            <form action="" method=post enctype=multipart/form-data class="form">
+                <input type=file id=file name=file class="file-input">
+                <label class="label" for="file">Select</label>
+                <input type=submit value="Upload" class="button">
+            </form>
+            {% endif %}
+            {% for message in get_flashed_messages() %}
+            <h3 class="flash">{{ message }}</h3>
+            {% endfor %}
+            {% if only_folder == "True" %}
+            <div class="move-mode">
+                <a href=" /">EXIT</a>
+            </div>
+            {% else %}
+            <form class="create-folder" id="create-folder" action="/new-folder" method=post enctype=multipart/form-data>
+                <input type=text id=folder name=folder class="new-folder" placeholder="Create folder"
+                    autocomplete="off">
+                <input type="submit" value="+">
+            </form>
+            {%endif%}
+        </div>
+        <div class="files-container">
+            {% for file in value %}
+            {% if '.' in file %}
+            {% if only_folder == "False" %}
+            <div class="file">
+                <a href="/return-files/{{file}}" target="blank">
+                    {% if ".png" in file or ".jpg" in file or ".jpeg" in file or ".jfif" in file or ".gif" in file or
+                    ".ico" in file or ".svg" in file%}
+                    <img src="https://img.icons8.com/plasticine/2x/image.png" alt="icons icon">
+                    {% elif ".txt" in file or ".docx" in file or ".doc" in file %}
+                    <img src="https://static.thenounproject.com/png/835508-200.png" alt="text icon">
+                    {% elif ".pdf" in file %}
+                    <img style="width:55px" src="https://cpoa.org/wp-content/uploads/2018/11/PDF-download-Icon.png"
+                        alt="pdf icon">
+                    {% elif ".xl" in file or ".xlsx" in file%}
+                    <img style="width: 35px; margin: 0px 8px"
+                        src="https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/256x256/spreadsheet_row.png"
+                        alt="excel icon">
+                    {% elif ".mp" in file or ".wav" in file or ".flac" in file or ".aac" in file or ".wma" in file%}
+                    <img src="https://img.icons8.com/plasticine/2x/speaker.png" alt="music icon">
+                    {% elif ".zip" in file %}
+                    <img style="width:40px"
+                        src="https://cdn2.iconfinder.com/data/icons/file-and-folder-25/64/ZIP-lossless-data-compression-512.png"
+                        alt="zip icon">
+                    {% elif ".pptx" in file or "ppt" in file%}
+                    <img style="width:40px; margin: 0px 5px"
+                        src="data:image/png;base64,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"
+                        alt="pptx icon">
+                    {% endif %}
+                    {{file}}
+                </a>
+                <span class="menu" id="menu">&#x2637;</span>
+                <ul>
+                    <li>
+                        <a class="menu-link" href="/return-files/{{file}}" target="blank" class="title">Download</a>
+                    </li>
+                    <li>
+                        <a class="menu-link" href="/move-mode/{{actual_path}}{{file}}">Move</a>
+                    </li>
+                    <li>
+                        <a class="menu-link" href="/preview/{{file}}">Preview</a>
+                    </li>
+                    <li>
+                        <a class="menu-link" class="delete" href="/delete/{{file}}">
+                            <img style="width: 25px;" src="https://image.flaticon.com/icons/png/512/3161/3161358.png"
+                                alt="bin icon">
+                            Delete
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            {% endif %}
+            {% else %}
+            <div class="file">
+                <a href="/directory/{{file}}/{{only_folder}}/{{file_to_move}}" target=" blank">
+                    <img src="https://img.icons8.com/plasticine/2x/folder-invoices.png" alt="directory icon">
+                    {{file}}
+                </a>
+                <span class="menu" id="menu">&#x2637;</span>
+                <ul>
+                    <li>
+                        <a class="title">{{file}}</a>
+                    </li>
+                    <li>
+                        <a style="font-size: 20px;" class="delete" href="/delete/{{file}}">
+                            <img style="width: 25px;" src="https://image.flaticon.com/icons/png/512/3161/3161358.png"
+                                alt="bin icon">
+                            Delete
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        <div class="back">
+            <a href="/back/{{only_folder}}/{{file_to_move}}">
+                <span style="font-size: 50px; font-weight: bold;">&#x21b6;</span>
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>

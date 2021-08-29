@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Files</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='files.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <div class="main-menu file" style="border: none;">
+            {% if ".png" in file or ".jpg" in file or ".jpeg" in file or ".jfif" in file or ".gif" in file or
+            ".ico" in file or ".svg" in file%}
+            <h1>{{file}}</h1>
+            {%else%}
+            <h1>File</h1>
+            {%endif%}
+            <a href="/" style="font-weight: bold;">BACK</a>
+        </div>
+        {% if ".png" in file or ".jpg" in file or ".jpeg" in file or ".jfif" in file or ".gif" in file or
+        ".ico" in file or ".svg" in file %}
+        <div class="image-preview" style="display: flex; justify-content: center;">
+            <img src="{{ url_for('static', filename=file) }}" alt="{{file}}" style="max-width: 800px;">
+        </div>
+        {%elif ".mp4" in file%}
+        <video controls>
+            <source src="{{ url_for('static', filename=file) }}" type="video/mp4">
+            <p>file</p>
+        </video>
+
+        {% else %}
+        <div class="text-container">
+            <p class="text-file">{{file}}</p>
+        </div>
+        {%endif%}
+
+    </div>
+
+</body>
+
+</html>
